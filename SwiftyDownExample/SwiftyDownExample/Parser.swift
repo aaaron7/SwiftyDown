@@ -215,7 +215,7 @@ func space(includeNewLine : Bool = true)->Parser<String>{
 
 func symbol(sym : String) -> Parser<String>{
     return string(sym) >>= { sym in
-        space() >>= { _ in
+        space(false) >>= { _ in
             pure(sym)
         }
     }
