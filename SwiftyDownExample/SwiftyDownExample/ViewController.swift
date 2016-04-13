@@ -15,7 +15,7 @@ class ViewController: UIViewController {
         label.lineBreakMode = .ByWordWrapping
         label.numberOfLines = 0
         // Do any additional setup after loading the view, typically from a nib.
-        let str = "# Header \n plain text \n ## Second header \n ### Third header \n #### Fourth header \n  Regular text. `inline code block` and some **bold**, *italics* \n  this is a [hyperlinks](http://www.yahoo.com)"
+        let str = "# Header1 \n plain text \n ##Header2 \n ###Header3 \n ####Header4  \n#####Header5  \n######Header6  \n#######Header7  \n########Header8  \n#########Header9  \n##########Header10  \n  Regular text. `inline code block` and some **bold**, *italics* \n  this is a [hyperlinks](http://www.yahoo.com)"
         let m = MarkdownParser()
         let result = m.markdowns().p(str)
         label.attributedText = m.render(result[0].0)
