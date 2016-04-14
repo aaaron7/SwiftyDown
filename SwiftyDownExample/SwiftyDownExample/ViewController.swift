@@ -15,11 +15,13 @@ class ViewController: UIViewController {
         label.lineBreakMode = .ByWordWrapping
         label.numberOfLines = 0
         // Do any additional setup after loading the view, typically from a nib.
-        let str = "# Header1 \n plain text \n \n##Header2 \n\n ###Header3\n \n ####Header4 \n \n#####Header5  \n\n######Header6 \n\n\n\n\n \n#######Header7\n  \n########Header8  \n\n#########Header9  \n\n\n\n##########Header10 \n\n \n  Regular text. `inline code block` and some **bold**, *italics* \n \n  this is a [hyperlinks](http://www.yahoo.com)"
+        let str = "# Header1 \n plain text \n \n##Header2 \n\n ###Header3\n \n ####Header4 \n \n#####Header5  \n\n######Header6 \n\n\n\n\n \n#######Header7 > Test \n\n> Test2 \n > Test3, okay, this is a quote format test. Sure it can be `**nested**`, like [that](yahoo.com) \n\n ########Header8  \n\n#########Header9  \n\n\n\n##########Header10 \n\n \n  Regular text. `inline code block` and some **bold**, *[italics links](yahoo.com)* \n \n  this is a [hyperlinks](http://www.yahoo.com)"
+        
         let m = MarkdownParser()
-        let result = m.markdowns().p(str)
-        label.attributedText = m.render(result[0].0)
-        print(result)
+
+        label.attributedText = m.convert(str)
+
+
     }
 
     @IBOutlet weak var label: UILabel!

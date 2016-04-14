@@ -97,8 +97,9 @@ func satisfy(condition : Character -> Bool) -> Parser<Character>{
 infix operator +++ {associativity left precedence 130}
 func +++ <a>(l : Parser<a>, r:Parser<a>) -> Parser<a>   {
     return Parser { x in
-        if l.p(x).count > 0{
-            return l.p(x)
+        let left = l.p(x)
+        if left.count > 0{
+            return left
         }else{
             return r.p(x)
         }
@@ -120,6 +121,28 @@ func many1<a>(p : Parser<a>) -> Parser<[a]>{
 }
 
 func many1loop<a>(p : Parser<a>) -> Parser<[a]>{
+    return Parser { str in
+        var result:[a] = []
+        var curStr = str
+        while(true){
+            var temp = p.p(curStr)
+            if temp.count == 0{
+                break;
+            }else{
+                result.append(temp[0].0)
+                curStr = temp[0].1
+            }
+        }
+
+        if result.count == 0{
+            return []
+        }else{
+            return [(result,curStr)]
+        }
+    }
+}
+
+func many1looptemp<a>(p : Parser<a>) -> Parser<[a]>{
     return Parser { str in
         var result:[a] = []
         var curStr = str
@@ -215,9 +238,9 @@ func space(includeNewLine : Bool = true)->Parser<String>{
 
 func symbol(sym : String) -> Parser<String>{
     return string(sym) >>= { sym in
-        space(false) >>= { _ in
-            pure(sym)
-        }
+//        space(false) >>= { _ in
+//        }
+        pure(sym)
     }
 }
 
@@ -285,6 +308,12 @@ func pair(sepa1 : String , sepa2 : String) -> Parser<String>{
     }
 }
 
+//func pairEx<a>(sepa1 : Parser<a>, sepa2 : Parser<a>) -> Parser<String>{
+//    return sepa1 >>= { _ in
+//        
+//    }
+//}
+
 func trimedSatisfy(pred : Character->Bool) -> Parser<Character>{
     return space(false) >>= { _ in
         satisfy(pred) >>= { x in
@@ -293,3 +322,9 @@ func trimedSatisfy(pred : Character->Bool) -> Parser<Character>{
     }
 }
 
+
+func lineStr()->Parser<String>{
+    return many1loop(satisfy(isNotNewLine)) >>= { cs in
+        pure(String(cs))
+    }
+}
