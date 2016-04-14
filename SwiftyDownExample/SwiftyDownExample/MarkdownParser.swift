@@ -12,18 +12,33 @@ import UIKit
 class MarkdownParser{
     
     let reserved = "`*#[("
-    var markdown : Parser<Markdown>?
-    init(){
-        setup()
+
+    func convert(string : String) -> NSAttributedString{
+        let result = self.markdowns().p(string)
+        if result.count <= 0{
+            return NSAttributedString(string: "Parsing failed")
+        }else{
+            return render(result[0].0)
+        }
     }
-    
-    func setup(){
-        markdown = ita() +++ bold() +++ inlineCode() +++ header() +++ links() +++ plain()
-            +++ refer()
+
+    func markdown() -> Parser<Markdown>{
+        return refer() +++ ita() +++ bold() +++ inlineCode() +++ header() +++ links() +++ plain()
             +++ newline() +++ fakeNewline()
     }
-    
-    func header()->Parser<Markdown>{
+
+    func markdowns() -> Parser<[Markdown]>{
+        let m = space(false) >>= {_ in self.markdown()}
+        let mm = many1looptemp(m)
+        return Parser{ str in
+            print(str)
+            return mm.p(str)
+        }
+    }
+}
+
+extension MarkdownParser{
+    private func header()->Parser<Markdown>{
         return many1loop(parserChar("#")) >>= { cs in
             line() >>= { str in
                 var tmds = self.pureStringParse(str)
@@ -33,28 +48,28 @@ class MarkdownParser{
         }
     }
 
-    func ita() -> Parser<Markdown>{
+    private func ita() -> Parser<Markdown>{
         return pair("*") >>= { str in
             let mds = self.pureStringParse(str)
             return pure(.Ita(mds))
         }
     }
 
-    func bold() -> Parser<Markdown>{
+    private func bold() -> Parser<Markdown>{
         return pair("**") >>= { str in
             let mds = self.pureStringParse(str)
             return pure(.Bold(mds))
         }
     }
 
-    func inlineCode() -> Parser<Markdown>{
+    private func inlineCode() -> Parser<Markdown>{
         return pair("`") >>= { str in
             let mds = self.pureStringParse(str)
             return pure(.InlineCode(mds))
         }
     }
 
-    func links() -> Parser<Markdown>{
+    private func links() -> Parser<Markdown>{
         return pair("[", sepa2: "]") >>= { str in
             pair("(", sepa2: ")") >>= { str1 in
                 let mds = self.pureStringParse(str)
@@ -64,7 +79,7 @@ class MarkdownParser{
         }
     }
 
-    func markdownNewLineBreak()->Parser<String>{
+    private func markdownNewLineBreak()->Parser<String>{
         let p = trimedSatisfy(isNewLine)
         return p >>= { _ in
             many1loop(p) >>= { _ in
@@ -72,20 +87,20 @@ class MarkdownParser{
             }
         }
     }
-    
-    func newline() -> Parser<Markdown>{
+
+    private func newline() -> Parser<Markdown>{
         return markdownNewLineBreak() >>= { str in
             pure(.Plain(str))
         }
     }
-    
-    func fakeNewline() -> Parser<Markdown>{
+
+    private func fakeNewline() -> Parser<Markdown>{
         return trimedSatisfy(isNewLine) >>= { _ in
             pure(.Plain(" "))
         }
     }
-    
-    func markdownLineStr() ->Parser<String>{
+
+    private func markdownLineStr() ->Parser<String>{
         return Parser{ str in
             var result = ""
             var rest = str
@@ -96,10 +111,10 @@ class MarkdownParser{
                     rest = String(rest.characters.dropFirst())
                     continue
                 }
-                
+
                 result += temp[0].0
                 rest = temp[0].1
-                
+
                 let linebreaks = self.markdownNewLineBreak().p(temp[0].1)
                 if linebreaks.count > 0{
                     break
@@ -107,14 +122,14 @@ class MarkdownParser{
                     continue
                 }
             }
-            
+
             return [(result,rest)]
         }
     }
 
-    func plain() -> Parser<Markdown>{
+    private func plain() -> Parser<Markdown>{
         func pred(c : Character) -> Bool{
-            
+
             if reserved.characters.indexOf(c) != nil{
                 return false
             }
@@ -125,8 +140,8 @@ class MarkdownParser{
             pure(.Plain(String(cs)))
         }
     }
-    
-    func pureStringParse(string : String) -> [Markdown]{
+
+    private func pureStringParse(string : String) -> [Markdown]{
         print("begin nesting : \(string)")
         let result = self.markdowns().p(string)
         if result.count > 0 {
@@ -135,26 +150,18 @@ class MarkdownParser{
             return []
         }
     }
-    
-    func refer() -> Parser<Markdown>{
+
+    private func refer() -> Parser<Markdown>{
         return newline() >>= { _ in
             space(false) >>= { _ in
                 symbol("> ") >>= { _ in
                     self.markdownLineStr() >>= { str in
+                        print("refer:" + str)
                         let mds = self.pureStringParse(str)
                         return pure(.Refer(mds))
                     }
                 }
             }
-        }
-    }
-
-    func markdowns() -> Parser<[Markdown]>{
-        let m = space(false) >>= {_ in self.markdown!}
-        let mm = many1loop(m)
-        return Parser{ str in
-            print(str)
-            return mm.p(str)
         }
     }
 }
@@ -167,10 +174,7 @@ extension MarkdownParser{
     func renderHelper(arr : [Markdown], parentAttribute : [String : AnyObject]?) -> NSAttributedString{
         let attributedString : NSMutableAttributedString = NSMutableAttributedString()
 
-
-        
         for m in arr{
-            
             var baseAttribute:[String : AnyObject] = [:]
             
             if let _ = parentAttribute{
@@ -182,17 +186,32 @@ extension MarkdownParser{
             switch m{
             case .Bold(let mds):
                 var tAttr:[String:AnyObject] = baseAttribute
-                tAttr[NSFontAttributeName] = UIFont.boldSystemFontOfSize(18)
+                if tAttr[NSFontAttributeName]  != nil{
+                    let font = tAttr[NSFontAttributeName]!.pointSize
+                    tAttr[NSFontAttributeName] = UIFont.boldSystemFontOfSize(font)
+
+                }else{
+                    tAttr[NSFontAttributeName] = UIFont.boldSystemFontOfSize(18)
+                }
 
                 let subAttrString = renderHelper(mds, parentAttribute: tAttr)
                 attributedString.appendAttributedString(subAttrString)
  
             case .Ita(let mds):
                 var tAttr:[String:AnyObject] = baseAttribute
-                tAttr[NSFontAttributeName] =  UIFont.italicSystemFontOfSize(17)
-                let subAttrString = renderHelper(mds, parentAttribute: tAttr)
 
+                if tAttr[NSFontAttributeName]  != nil{
+                    let font = tAttr[NSFontAttributeName]!.pointSize
+                    tAttr[NSFontAttributeName] = UIFont.italicSystemFontOfSize(font)
+
+                }else{
+                    tAttr[NSFontAttributeName] = UIFont.italicSystemFontOfSize(17)
+                }
+
+                let subAttrString = renderHelper(mds, parentAttribute: tAttr)
                 attributedString.appendAttributedString(subAttrString)
+
+
             case .Header(let level, let mds):
                 let fontSize = 18 + (6 - level)
                 var tAttr:[String:AnyObject] = baseAttribute
