@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum Markdown{
+indirect enum Markdown{
     case Ita(String)
     case Bold(String)
     case Header(Int,String)
@@ -16,4 +16,5 @@ enum Markdown{
     case CodeBlock(String)
     case Links(String,String)
     case Plain(String)
+    case Refer(Markdown)
 }

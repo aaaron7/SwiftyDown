@@ -13,7 +13,7 @@ class MarkdownParser{
     func header()->Parser<Markdown>{
         return many1loop(parserChar("#")) >>= { cs in
             line() >>= { str in
-                pure(.Header(cs.count,str))
+                pure(.Header(cs.count,str + "\n"))
             }
         }
     }
@@ -45,10 +45,17 @@ class MarkdownParser{
     }
 
     func newline() -> Parser<Markdown>{
-        return space(false) >>= { _ in
-            satisfy(isNewLine) >>= { _ in
+        let p = trimedSatisfy(isNewLine)
+        return p >>= { _ in
+            many1loop(p) >>= { _ in
                 pure(.Plain("\n"))
             }
+        }
+    }
+    
+    func fakeNewline() -> Parser<Markdown>{
+        return trimedSatisfy(isNewLine) >>= { _ in
+            pure(.Plain(" "))
         }
     }
 
@@ -65,9 +72,15 @@ class MarkdownParser{
             pure(.Plain(String(cs)))
         }
     }
+    
+//    func refer() -> Parser<Markdown>{
+//        return symbol("> ") >>= { _ in
+//            
+//        }
+//    }
 
     func markdown() -> Parser<Markdown>{
-        return  ita() +++ bold() +++ inlineCode() +++ header() +++ links() +++ plain() +++ newline()
+        return  ita() +++ bold() +++ inlineCode() +++ header() +++ links() +++ plain() +++ newline() +++ fakeNewline()
     }
 
     func markdowns() -> Parser<[Markdown]>{
