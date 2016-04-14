@@ -9,12 +9,12 @@
 import Foundation
 
 indirect enum Markdown{
-    case Ita(String)
-    case Bold(String)
-    case Header(Int,String)
-    case InlineCode(String)
+    case Ita([Markdown])
+    case Bold([Markdown])
+    case Header(Int,[Markdown])
+    case InlineCode([Markdown])
     case CodeBlock(String)
-    case Links(String,String)
+    case Links([Markdown],String)
     case Plain(String)
-    case Refer(Markdown)
+    case Refer([Markdown])
 }

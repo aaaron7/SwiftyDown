@@ -285,6 +285,12 @@ func pair(sepa1 : String , sepa2 : String) -> Parser<String>{
     }
 }
 
+//func pairEx<a>(sepa1 : Parser<a>, sepa2 : Parser<a>) -> Parser<String>{
+//    return sepa1 >>= { _ in
+//        
+//    }
+//}
+
 func trimedSatisfy(pred : Character->Bool) -> Parser<Character>{
     return space(false) >>= { _ in
         satisfy(pred) >>= { x in
@@ -293,3 +299,9 @@ func trimedSatisfy(pred : Character->Bool) -> Parser<Character>{
     }
 }
 
+
+func lineStr()->Parser<String>{
+    return many1loop(satisfy(isNotNewLine)) >>= { cs in
+        pure(String(cs))
+    }
+}
