@@ -36,6 +36,13 @@ pod 'SwiftyDown'
 
 > refer text block        <-------- this one is not perfect due to NSAttributedString functionality.
 
+
+and nested syntax like:
+
+`**nested**`
+*[italics links](yahoo.com)*
+...
+
 ```
 
 ## Usage
