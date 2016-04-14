@@ -6,11 +6,11 @@ Pod::Spec.new do |s|
                        Simple, Elegant, Powerful markdown parser written in swift.
                        DESC
   s.homepage         = "https://github.com/aaaron7/SwiftyDown"
-  s.screenshots      = "git@github.com:aaaron7/SwiftyDown.git"
-  s.license          = 'MIT'
+  s.screenshots      = "https://raw.githubusercontent.com/aaaron7/SwiftyDown/master/SwiftyDownExample/screenshots.png"
+  s.license          = 'LICENSE.txt'
   s.author           = { "aaaron7" => "aaaron7@outlook.com" }
   s.source           = { :git => "https://github.com/aaaron7/SwiftyDown.git", :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/NAME'
+  s.social_media_url = 'http://weibo.com/roseofsharon'
 
   s.platform     = :ios, '8.0'
   # s.ios.deployment_target = '5.0'
