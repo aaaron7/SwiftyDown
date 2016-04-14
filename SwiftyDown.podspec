@@ -1,9 +1,9 @@
 Pod::Spec.new do |s|
   s.name             = "SwiftyDown"
-  s.version          = "0.0.1"
+  s.version          = "0.0.2"
   s.summary          = "Pure swift implementation markdown parser, convert to NSAttributedString"
   s.description      = <<-DESC
-                       Simple, Elegant, Powerful markdown parser written in swift.
+                       Simple, Elegant, Powerful markdown parser written in swift. Provides friendly interface to convert markdown string to NSAttributedString.
                        DESC
   s.homepage         = "https://github.com/aaaron7/SwiftyDown"
   s.screenshots      = "https://raw.githubusercontent.com/aaaron7/SwiftyDown/master/SwiftyDownExample/screenshots.png"

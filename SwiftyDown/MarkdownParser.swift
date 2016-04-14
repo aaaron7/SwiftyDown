@@ -9,11 +9,15 @@
 import Foundation
 import UIKit
 
-class MarkdownParser{
+public class MarkdownParser{
     
     let reserved = "`*#[("
 
-    func convert(string : String) -> NSAttributedString{
+    public init(){
+
+    }
+
+    public func convert(string : String) -> NSAttributedString{
         let result = self.markdowns().p(string)
         if result.count <= 0{
             return NSAttributedString(string: "Parsing failed")
@@ -31,7 +35,6 @@ class MarkdownParser{
         let m = space(false) >>= {_ in self.markdown()}
         let mm = many1looptemp(m)
         return Parser{ str in
-            print(str)
             return mm.p(str)
         }
     }
@@ -142,7 +145,6 @@ extension MarkdownParser{
     }
 
     private func pureStringParse(string : String) -> [Markdown]{
-        print("begin nesting : \(string)")
         let result = self.markdowns().p(string)
         if result.count > 0 {
             return result[0].0
@@ -156,7 +158,6 @@ extension MarkdownParser{
             space(false) >>= { _ in
                 symbol("> ") >>= { _ in
                     self.markdownLineStr() >>= { str in
-                        print("refer:" + str)
                         let mds = self.pureStringParse(str)
                         return pure(.Refer(mds))
                     }
