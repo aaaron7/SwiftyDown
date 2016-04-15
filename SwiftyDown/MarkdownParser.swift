@@ -28,7 +28,7 @@ public class MarkdownParser{
 
     func markdown() -> Parser<Markdown>{
         return refer() +++ ita() +++ bold() +++ inlineCode() +++ header() +++ links() +++ plain()
-            +++ newline() +++ fakeNewline()
+            +++ newline() +++ fakeNewline() +++ reservedHandler()
     }
 
     func markdowns() -> Parser<[Markdown]>{
@@ -41,6 +41,17 @@ public class MarkdownParser{
 }
 
 extension MarkdownParser{
+
+    private func reservedHandler() -> Parser<Markdown>{
+        func pred(c : Character) -> Bool{
+            return reserved.characters.indexOf(c) != nil
+        }
+
+        return satisfy(pred) >>= { c in
+            pure(.Plain(String(c)))
+        }
+    }
+
     private func header()->Parser<Markdown>{
         return many1loop(parserChar("#")) >>= { cs in
             line() >>= { str in
