@@ -90,7 +90,30 @@ func satisfy(condition : Character -> Bool) -> Parser<Character>{
     }
 }
 
+func until(word : String, terminator : Character = "\0") -> Parser<String>{
+    return Parser{ x in
+        let idx = x.rangeOfString(word)
+        let idxTer = x.rangeOfString(String(terminator))
+        if idx == nil{
+            return [(x,"")]
+        }else if idxTer == nil{
+            return [(x.substringToIndex(idx!.startIndex),x.substringFromIndex(idx!.startIndex))]
+        }else{
+            var finalIdx:String.CharacterView.Index
+            if idx!.startIndex > idxTer!.startIndex{
+                finalIdx = idxTer!.startIndex
+            }else{
+                finalIdx = idx!.startIndex
+            }
 
+            return [(x.substringToIndex(finalIdx) , x.substringFromIndex(finalIdx))]
+        }
+    }
+}
+
+func lineUntil(word : String) -> Parser<String>{
+    return until(word, terminator: "\n")
+}
 
 //MARK: combinator
 
@@ -142,27 +165,6 @@ func many1loop<a>(p : Parser<a>) -> Parser<[a]>{
     }
 }
 
-func many1looptemp<a>(p : Parser<a>) -> Parser<[a]>{
-    return Parser { str in
-        var result:[a] = []
-        var curStr = str
-        while(true){
-            var temp = p.p(curStr)
-            if temp.count == 0{
-                break;
-            }else{
-                result.append(temp[0].0)
-                curStr = temp[0].1
-            }
-        }
-
-        if result.count == 0{
-            return []
-        }else{
-            return [(result,curStr)]
-        }
-    }
-}
 
 func parserChar(c : Character) -> Parser<Character>{
     return Parser { x in
@@ -238,8 +240,6 @@ func space(includeNewLine : Bool = true)->Parser<String>{
 
 func symbol(sym : String) -> Parser<String>{
     return string(sym) >>= { sym in
-//        space(false) >>= { _ in
-//        }
         pure(sym)
     }
 }
@@ -290,20 +290,16 @@ func rest<a>(p : Parser<a>, x : a, op : Parser<(a,a) -> a>) -> Parser<a>{
 
 func pair(sepa : String) -> Parser<String>{
     return symbol(sepa) >>= { _ in
-        lineWithout(sepa[sepa.startIndex]) >>= { str in
-            symbol(sepa) >>= { _ in
-                pure(str)
-            }
+        lineUntil(sepa) >>= { str in
+            symbol(sepa) >>= {_ in pure(str)}
         }
     }
 }
 
 func pair(sepa1 : String , sepa2 : String) -> Parser<String>{
     return symbol(sepa1) >>= { _ in
-        lineWithout(sepa2[sepa2.startIndex]) >>= { str in
-            symbol(sepa2) >>= { _ in
-                pure(str)
-            }
+        lineUntil(sepa2) >>= { str in
+            symbol(sepa2) >>= {_ in pure(str)}
         }
     }
 }

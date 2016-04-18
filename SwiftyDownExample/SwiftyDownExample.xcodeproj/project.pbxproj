@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		752668521CBFDADE00B67832 /* MarkdownParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7526684F1CBFDADE00B67832 /* MarkdownParser.swift */; };
 		752668531CBFDADE00B67832 /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 752668501CBFDADE00B67832 /* Parser.swift */; };
-		752668541CBFDADE00B67832 /* Syntax.swift in Sources */ = {isa = PBXBuildFile; fileRef = 752668511CBFDADE00B67832 /* Syntax.swift */; };
 		752E66B61CBE8E6300F5C320 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 752E66B51CBE8E6300F5C320 /* AppDelegate.swift */; };
 		752E66B81CBE8E6300F5C320 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 752E66B71CBE8E6300F5C320 /* ViewController.swift */; };
 		752E66BB1CBE8E6300F5C320 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 752E66B91CBE8E6300F5C320 /* Main.storyboard */; };
@@ -25,7 +24,6 @@
 		37BFC221A64BBC698868339C /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7526684F1CBFDADE00B67832 /* MarkdownParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarkdownParser.swift; sourceTree = "<group>"; };
 		752668501CBFDADE00B67832 /* Parser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
-		752668511CBFDADE00B67832 /* Syntax.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Syntax.swift; sourceTree = "<group>"; };
 		752E66B21CBE8E6300F5C320 /* SwiftyDownExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftyDownExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		752E66B51CBE8E6300F5C320 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		752E66B71CBE8E6300F5C320 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -33,6 +31,7 @@
 		752E66BC1CBE8E6300F5C320 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		752E66BF1CBE8E6300F5C320 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		752E66C11CBE8E6300F5C320 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		755813B31CC50B5500AB5846 /* Do.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Do.playground; sourceTree = "<group>"; };
 		84D042F0F290C0DBAEA8039E /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		BC4F23B41CC48FD200343ADA /* AaHTTP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AaHTTP.swift; sourceTree = "<group>"; };
 		BC4F23B51CC48FD200343ADA /* AaNet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AaNet.swift; sourceTree = "<group>"; };
@@ -63,7 +62,7 @@
 			children = (
 				7526684F1CBFDADE00B67832 /* MarkdownParser.swift */,
 				752668501CBFDADE00B67832 /* Parser.swift */,
-				752668511CBFDADE00B67832 /* Syntax.swift */,
+				755813B31CC50B5500AB5846 /* Do.playground */,
 			);
 			path = SwiftyDown;
 			sourceTree = "<group>";
@@ -234,7 +233,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				752668531CBFDADE00B67832 /* Parser.swift in Sources */,
-				752668541CBFDADE00B67832 /* Syntax.swift in Sources */,
 				752E66B81CBE8E6300F5C320 /* ViewController.swift in Sources */,
 				752E66B61CBE8E6300F5C320 /* AppDelegate.swift in Sources */,
 				752668521CBFDADE00B67832 /* MarkdownParser.swift in Sources */,
