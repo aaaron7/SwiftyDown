@@ -30,6 +30,7 @@ public class MarkdownParser{
         return refer() +++ ita() +++ bold() +++ inlineCode() +++ header() +++ links() +++ plain()
             +++ newline() +++ fakeNewline() +++ reservedHandler()
     }
+    
 
     func markdowns() -> Parser<[Markdown]>{
         let m = space(false) >>= {_ in self.markdown()}
@@ -53,11 +54,14 @@ extension MarkdownParser{
     }
 
     private func header()->Parser<Markdown>{
-        return many1loop(parserChar("#")) >>= { cs in
-            line() >>= { str in
-                var tmds = self.pureStringParse(str)
-                tmds.append(.Plain("\n"))
-                return pure(.Header(cs.count,tmds))
+        return newline() >>= { _ in
+            many1loop(parserChar("#")) >>= { cs in
+                line() >>= { str in
+                    var tmds:[Markdown] = self.pureStringParse(str)
+                    tmds.insert(.Plain("\n\n"), atIndex: 0)
+                    tmds.append(.Plain("\n"))
+                    return pure(.Header(cs.count,tmds))
+                }
             }
         }
     }

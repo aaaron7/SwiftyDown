@@ -30,6 +30,7 @@ public class MarkdownParser{
         return refer() +++ ita() +++ bold() +++ inlineCode() +++ header() +++ links() +++ plain()
             +++ newline() +++ fakeNewline() +++ reservedHandler()
     }
+    
 
     func markdowns() -> Parser<[Markdown]>{
         let m = space(false) >>= {_ in self.markdown()}
@@ -53,10 +54,11 @@ extension MarkdownParser{
     }
 
     private func header()->Parser<Markdown>{
-        return many1loop(parserChar("#")) >>= { cs in
+        return  many1loop(parserChar("#")) >>= { cs in
             line() >>= { str in
-                var tmds = self.pureStringParse(str)
-                tmds.append(.Plain("\n"))
+                var tmds:[Markdown] = self.pureStringParse(str)
+//                tmds.insert(.Plain("\n\n"), atIndex: 0)
+//                tmds.append(.Plain("\n"))
                 return pure(.Header(cs.count,tmds))
             }
         }
@@ -120,6 +122,9 @@ extension MarkdownParser{
             var rest = str
             while(true){
                 var temp = lineStr().p(rest)
+                
+                
+                
                 guard temp.count > 0 else{
                     result.append(rest[rest.startIndex])
                     rest = String(rest.characters.dropFirst())
@@ -128,6 +133,10 @@ extension MarkdownParser{
 
                 result += temp[0].0
                 rest = temp[0].1
+                
+                if rest == "" {
+                    break
+                }
 
                 let linebreaks = self.markdownNewLineBreak().p(temp[0].1)
                 if linebreaks.count > 0{
@@ -169,13 +178,21 @@ extension MarkdownParser{
             space(false) >>= { _ in
                 symbol("> ") >>= { _ in
                     self.markdownLineStr() >>= { str in
-                        let mds = self.pureStringParse(str)
+                        var mds:[Markdown] = self.pureStringParse(str)
+                        mds.insert(.Plain("\n"), atIndex: 0)
+                        mds.append(.Plain("\n\n"))
                         return pure(.Refer(mds))
                     }
                 }
             }
         }
     }
+    
+//    private func codeblock() -> Parser<Markdown>{
+//        return symbol("```") >>= {
+//            
+//        }
+//    }
 }
 
 extension MarkdownParser{
@@ -225,7 +242,7 @@ extension MarkdownParser{
 
 
             case .Header(let level, let mds):
-                let fontSize = 18 + (6 - level)
+                let fontSize = 28 + (6 - 2*level)
                 var tAttr:[String:AnyObject] = baseAttribute
                 tAttr[NSFontAttributeName] =  UIFont.boldSystemFontOfSize(CGFloat(fontSize))
                 
@@ -258,6 +275,8 @@ extension MarkdownParser{
                 
                 attributedString.appendAttributedString(NSAttributedString(string: str, attributes: baseAttribute))
             case .Refer(let mds):
+                attributedString.appendAttributedString(NSAttributedString(string: "\n"))
+                
                 var tAttr:[String:AnyObject] = baseAttribute
                 tAttr[NSBackgroundColorAttributeName] = hexColor(0xeff5fe)
                 let subAttrString = renderHelper(mds, parentAttribute: tAttr)
