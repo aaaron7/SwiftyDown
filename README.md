@@ -67,5 +67,5 @@ label.attributedText = m.convert(str)
 ## Screenshots
 ![](https://raw.githubusercontent.com/aaaron7/SwiftyDown/master/SwiftyDownExample/screenshots.png)
 ![](https://raw.githubusercontent.com/aaaron7/SwiftyDown/master/SwiftyDownExample/screenshots1.png)
-![](https://raw.githubusercontent.com/aaaron7/SwiftyDown/master/SwiftyDownExample/screenshots2.png)
+![](https://raw.githubusercontent.com/aaaron7/SwiftyDown/master/SwiftyDownExample/screenshots2.jpg)
 
