@@ -34,14 +34,19 @@ pod 'SwiftyDown'
 
 [Hyperlink](github.com)
 
-> refer text block        <-------- this one is not perfect due to NSAttributedString functionality.
-
-
 and nested syntax like:
 
 `**nested**`
 *[italics links](yahoo.com)*
-...
+
+```Code Block`` 
+
+> reference paragraph
+
+~~deleted lines~~
+
+ 
+
 
 ```
 
@@ -61,3 +66,6 @@ label.attributedText = m.convert(str)
 
 ## Screenshots
 ![](https://raw.githubusercontent.com/aaaron7/SwiftyDown/master/SwiftyDownExample/screenshots.png)
+![](https://raw.githubusercontent.com/aaaron7/SwiftyDown/master/SwiftyDownExample/screenshots1.png)
+![](https://raw.githubusercontent.com/aaaron7/SwiftyDown/master/SwiftyDownExample/screenshots2.png)
+
