@@ -312,15 +312,24 @@ extension MarkdownParser{
                 
                 attributedString.appendAttributedString(NSAttributedString(string: str, attributes: baseAttribute))
             case .Refer(let mds):
-                attributedString.appendAttributedString(NSAttributedString(string: "\n"))
-                
+                attributedString.appendAttributedString(NSAttributedString(string: "\n\n"))
+
                 var tAttr:[String:AnyObject] = baseAttribute
                 tAttr[NSBackgroundColorAttributeName] = hexColor(0xeff5fe)
+
+
+
+                let paras = NSMutableParagraphStyle()
+                paras.paragraphSpacing = 10
                 let subAttrString = renderHelper(mds, parentAttribute: tAttr)
                 attributedString.appendAttributedString(subAttrString)
             case .CodeBlock(let code):
+                attributedString.appendAttributedString(NSAttributedString(string: "\n"))
+
                 let backgroundColor = UIColor(red: 33 / 255, green: 37/255, blue: 43/255, alpha: 1.0)
-                attributedString.appendAttributedString(NSAttributedString(string: code, attributes: [NSBackgroundColorAttributeName:backgroundColor, NSForegroundColorAttributeName:UIColor.whiteColor()]))
+                let paras = NSMutableParagraphStyle()
+                paras.paragraphSpacing = 0
+                attributedString.appendAttributedString(NSAttributedString(string: code, attributes: [NSBackgroundColorAttributeName:backgroundColor, NSForegroundColorAttributeName:UIColor.whiteColor(),NSParagraphStyleAttributeName:paras]))
             case .Delete(let mds):
                 var tAttr:[String:AnyObject] = baseAttribute
                 tAttr[NSStrikethroughStyleAttributeName] = NSUnderlineStyle.StyleDouble.rawValue

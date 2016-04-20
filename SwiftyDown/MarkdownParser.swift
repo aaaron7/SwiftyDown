@@ -209,11 +209,11 @@ extension MarkdownParser{
     private func refer() -> Parser<Markdown>{
         return many1loop(self.fakeNewline()) >>= { _ in
             space(false) >>= { _ in
-                symbol("> ") >>= { _ in
+                symbol(">") >>= { _ in
                     self.markdownLineStr() >>= { str in
                         var mds:[Markdown] = self.pureStringParse(str)
-                        mds.insert(.Plain("\n"), atIndex: 0)
-                        mds.append(.Plain("\n\n"))
+                        //mds.insert(.Plain("\n"), atIndex: 0)
+                        mds.append(.Plain("\n"))
                         return pure(.Refer(mds))
                     }
                 }
@@ -223,7 +223,7 @@ extension MarkdownParser{
     
     private func codeblock() -> Parser<Markdown>{
         return symbol("```") >>= { _ in
-            (lineStr() +++ space(false)) >>= { _ in
+            ((lineStr() >>= {_ in space(true)} )  +++ space(true)) >>= { _ in
                 until("```") >>= { str in
                     symbol("```") >>= {_ in pure(.CodeBlock(str))}
                 }
@@ -312,15 +312,24 @@ extension MarkdownParser{
                 
                 attributedString.appendAttributedString(NSAttributedString(string: str, attributes: baseAttribute))
             case .Refer(let mds):
-                attributedString.appendAttributedString(NSAttributedString(string: "\n"))
-                
+                attributedString.appendAttributedString(NSAttributedString(string: "\n\n"))
+
                 var tAttr:[String:AnyObject] = baseAttribute
                 tAttr[NSBackgroundColorAttributeName] = hexColor(0xeff5fe)
+
+
+
+                let paras = NSMutableParagraphStyle()
+                paras.paragraphSpacing = 10
                 let subAttrString = renderHelper(mds, parentAttribute: tAttr)
                 attributedString.appendAttributedString(subAttrString)
             case .CodeBlock(let code):
+                attributedString.appendAttributedString(NSAttributedString(string: "\n"))
+
                 let backgroundColor = UIColor(red: 33 / 255, green: 37/255, blue: 43/255, alpha: 1.0)
-                attributedString.appendAttributedString(NSAttributedString(string: code, attributes: [NSBackgroundColorAttributeName:backgroundColor, NSForegroundColorAttributeName:UIColor.whiteColor()]))
+                let paras = NSMutableParagraphStyle()
+                paras.paragraphSpacing = 0
+                attributedString.appendAttributedString(NSAttributedString(string: code, attributes: [NSBackgroundColorAttributeName:backgroundColor, NSForegroundColorAttributeName:UIColor.whiteColor(),NSParagraphStyleAttributeName:paras]))
             case .Delete(let mds):
                 var tAttr:[String:AnyObject] = baseAttribute
                 tAttr[NSStrikethroughStyleAttributeName] = NSUnderlineStyle.StyleDouble.rawValue
