@@ -207,7 +207,7 @@ extension MarkdownParser{
     }
 
     private func refer() -> Parser<Markdown>{
-        return newline() >>= { _ in
+        return many1loop(self.fakeNewline()) >>= { _ in
             space(false) >>= { _ in
                 symbol("> ") >>= { _ in
                     self.markdownLineStr() >>= { str in
