@@ -209,11 +209,11 @@ extension MarkdownParser{
     private func refer() -> Parser<Markdown>{
         return many1loop(self.fakeNewline()) >>= { _ in
             space(false) >>= { _ in
-                symbol("> ") >>= { _ in
+                symbol(">") >>= { _ in
                     self.markdownLineStr() >>= { str in
                         var mds:[Markdown] = self.pureStringParse(str)
-                        mds.insert(.Plain("\n"), atIndex: 0)
-                        mds.append(.Plain("\n\n"))
+                        //mds.insert(.Plain("\n"), atIndex: 0)
+                        mds.append(.Plain("\n"))
                         return pure(.Refer(mds))
                     }
                 }
@@ -223,7 +223,7 @@ extension MarkdownParser{
     
     private func codeblock() -> Parser<Markdown>{
         return symbol("```") >>= { _ in
-            (lineStr() +++ space(false)) >>= { _ in
+            ((lineStr() >>= {_ in space(true)} )  +++ space(true)) >>= { _ in
                 until("```") >>= { str in
                     symbol("```") >>= {_ in pure(.CodeBlock(str))}
                 }
