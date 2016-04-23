@@ -12,8 +12,6 @@ Compare to SwiftyMarkdown, SwiftyDown provides:
 - Parser-combinator based parsing process, always extensible within just few elegant code.
 - Configurable attributed option. (coming soon)
 
-~~deleted lines~~
-
 
 ## Install
 
