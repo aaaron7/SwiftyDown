@@ -21,7 +21,7 @@ Compare to SwiftyMarkdown, SwiftyDown provides:
 pod 'SwiftyDown'
 ```
 
-- or just drag `Parser.swift`, `MarkdownParser.swift` and `Syntax.swift` to your project folder.
+- or just drag `Parser.swift`, `MarkdownParser.swift` and ~~`Syntax.swift`~~ to your project folder.
 
 ## Support format
 
