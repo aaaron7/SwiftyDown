@@ -1,7 +1,18 @@
 # SwiftyDown
-SwiftyDown - Simple, Elegant, Powerful markdown parser written in swift. (still in dev
+SwiftyDown - Simple, Elegant, Powerful markdown parser written in swift. 
 
 If you have any thoughts or needs about this project, file an issue immediately :)
+
+## Why SwiftyDown
+
+Compare to SwiftyMarkdown, SwiftyDown provides:
+
+- Nested mark support, like **[Bold link](https://github.com/aaaron7)**, 
+- Enhanced markdown features like `multi-line code block`,reference paragraph and ~~deleted lines~~
+- Parser-combinator based parsing process, always extensible within just few elegant code.
+- Configurable attributed option. (coming soon)
+
+~~deleted lines~~
 
 
 ## Install
