@@ -12,8 +12,6 @@ Compare to SwiftyMarkdown, SwiftyDown provides:
 - Parser-combinator based parsing process, always extensible within just few elegant code.
 - Configurable attributed option. (coming soon)
 
-~~deleted lines~~
-
 
 ## Install
 
@@ -23,7 +21,7 @@ Compare to SwiftyMarkdown, SwiftyDown provides:
 pod 'SwiftyDown'
 ```
 
-- or just drag `Parser.swift`, `MarkdownParser.swift` and `Syntax.swift` to your project folder.
+- or just drag `Parser.swift`, `MarkdownParser.swift` and ~~`Syntax.swift`~~ to your project folder.
 
 ## Support format
 
