@@ -21,9 +21,62 @@ indirect enum Markdown{
     case Delete([Markdown])
 }
 
+
+
+public protocol MarkdownConfigurable{
+    var fontName : UIFont {get set}
+    var foregroundColor : UIColor? {get set}
+    var backgroundColor : UIColor? {get set}
+}
+
+public protocol HeaderStyleConfigurable{
+    var fontSize : (Int -> Int)? {get set}
+}
+
+public struct TrivialStyle : MarkdownConfigurable{
+    public var fontName: UIFont
+    public var foregroundColor: UIColor?
+    public var backgroundColor: UIColor?
+}
+
+public struct HeaderStyle : HeaderStyleConfigurable{
+    public var fontName: UIFont
+    public var foregroundColor: UIColor?
+    public var backgroundColor: UIColor?
+    public var fontSize : (Int -> Int)?
+}
+
+typealias MD = MarkdownParser
 public class MarkdownParser{
     
     let reserved = "`*#[(~"
+
+    public var boldStyle : MarkdownConfigurable =
+        TrivialStyle(fontName: UIFont.boldSystemFontOfSize(18), foregroundColor: nil, backgroundColor: nil)
+    public var italicsStyle : MarkdownConfigurable =
+        TrivialStyle(fontName: UIFont.italicSystemFontOfSize(17), foregroundColor: nil, backgroundColor: nil)
+    public var inlineCodeStyle : MarkdownConfigurable =
+        TrivialStyle(fontName: UIFont.systemFontOfSize(17), foregroundColor: nil, backgroundColor: MD.hexColor(0xdddddd))
+
+    public var linksStyle : MarkdownConfigurable =
+        TrivialStyle(fontName: UIFont.systemFontOfSize(17), foregroundColor: UIColor.blueColor(), backgroundColor: nil)
+
+    public var plainTextStyle : MarkdownConfigurable =
+        TrivialStyle(fontName: UIFont.systemFontOfSize(17), foregroundColor: nil, backgroundColor: nil)
+
+    public var referTextStyle : MarkdownConfigurable =
+        TrivialStyle(fontName: UIFont.systemFontOfSize(17), foregroundColor: nil, backgroundColor: MD.hexColor(0xeff5fe))
+
+
+    public var codeBlockStyle : MarkdownConfigurable =
+        TrivialStyle(fontName: UIFont.systemFontOfSize(17), foregroundColor: UIColor.whiteColor(), backgroundColor:MD.quickRGB(33, g: 37, b: 43))
+
+    public var deleteStyle : MarkdownConfigurable =
+        TrivialStyle(fontName: UIFont.systemFontOfSize(17), foregroundColor: nil, backgroundColor: nil)
+
+    public var headerStyle : HeaderStyleConfigurable = HeaderStyle(fontName: UIFont.boldSystemFontOfSize(18), foregroundColor: nil, backgroundColor: nil) { (NthHeader) -> Int in
+        return 28 + (6 - 2 * NthHeader)
+    }
 
     public init(){
 
@@ -37,7 +90,6 @@ public class MarkdownParser{
             return render(result[0].0)
         }
     }
-
 
     func markdown() -> Parser<Markdown>{
         return refer() +++ bold() +++ ita() +++ codeblock() +++ delete()  +++ inlineCode() +++ header() +++ links() +++ plain()
@@ -257,7 +309,7 @@ extension MarkdownParser{
                     tAttr[NSFontAttributeName] = UIFont.boldSystemFontOfSize(font)
 
                 }else{
-                    tAttr[NSFontAttributeName] = UIFont.boldSystemFontOfSize(18)
+                    tAttr[NSFontAttributeName] = boldStyle.fontName
                 }
 
                 let subAttrString = renderHelper(mds, parentAttribute: tAttr)
@@ -271,7 +323,7 @@ extension MarkdownParser{
                     tAttr[NSFontAttributeName] = UIFont.italicSystemFontOfSize(font)
 
                 }else{
-                    tAttr[NSFontAttributeName] = UIFont.italicSystemFontOfSize(17)
+                    tAttr[NSFontAttributeName] = italicsStyle.fontName
                 }
 
                 let subAttrString = renderHelper(mds, parentAttribute: tAttr)
@@ -279,10 +331,8 @@ extension MarkdownParser{
 
 
             case .Header(let level, let mds):
-                let fontSize = 28 + (6 - 2*level)
                 var tAttr:[String:AnyObject] = baseAttribute
-                tAttr[NSFontAttributeName] =  UIFont.boldSystemFontOfSize(CGFloat(fontSize))
-                
+                tAttr[NSFontAttributeName] =  UIFont.boldSystemFontOfSize(CGFloat(headerStyle.fontSize!(level)))
                 let subAttrString = renderHelper(mds, parentAttribute: tAttr)
                 attributedString.appendAttributedString(subAttrString)
 
@@ -290,8 +340,9 @@ extension MarkdownParser{
                 
                 var tAttr:[String:AnyObject] = baseAttribute
                 
-                tAttr[NSFontAttributeName] = UIFont.systemFontOfSize(16)
-                tAttr[NSBackgroundColorAttributeName] = hexColor(0xdddddd)
+                tAttr[NSFontAttributeName] = inlineCodeStyle.fontName
+                tAttr[NSBackgroundColorAttributeName] = inlineCodeStyle.backgroundColor
+                tAttr[NSForegroundColorAttributeName] = inlineCodeStyle.foregroundColor
 
                 let subAttrString = renderHelper(mds, parentAttribute: tAttr)
 
@@ -301,13 +352,14 @@ extension MarkdownParser{
 
                 tAttr[NSLinkAttributeName] = links
                 tAttr[NSUnderlineStyleAttributeName] = NSUnderlineStyle.StyleSingle.rawValue
-                tAttr[NSForegroundColorAttributeName] = UIColor.blueColor()
+                tAttr[NSForegroundColorAttributeName] = linksStyle.foregroundColor
+                tAttr[NSBackgroundColorAttributeName] = linksStyle.backgroundColor
                 let subAttrString = renderHelper(mds, parentAttribute: tAttr)
 
                 attributedString.appendAttributedString(subAttrString)
             case .Plain(let str):
                 if baseAttribute[NSFontAttributeName] == nil{
-                    baseAttribute[NSFontAttributeName] = UIFont.systemFontOfSize(17)
+                    baseAttribute[NSFontAttributeName] = plainTextStyle.fontName
                 }
                 
                 attributedString.appendAttributedString(NSAttributedString(string: str, attributes: baseAttribute))
@@ -315,9 +367,7 @@ extension MarkdownParser{
                 attributedString.appendAttributedString(NSAttributedString(string: "\n\n"))
 
                 var tAttr:[String:AnyObject] = baseAttribute
-                tAttr[NSBackgroundColorAttributeName] = hexColor(0xeff5fe)
-
-
+                tAttr[NSBackgroundColorAttributeName] = referTextStyle.backgroundColor
 
                 let paras = NSMutableParagraphStyle()
                 paras.paragraphSpacing = 10
@@ -325,26 +375,32 @@ extension MarkdownParser{
                 attributedString.appendAttributedString(subAttrString)
             case .CodeBlock(let code):
                 attributedString.appendAttributedString(NSAttributedString(string: "\n"))
-
-                let backgroundColor = UIColor(red: 33 / 255, green: 37/255, blue: 43/255, alpha: 1.0)
+                let backgroundColor = codeBlockStyle.backgroundColor
+                let foregroundColor = codeBlockStyle.foregroundColor
                 let paras = NSMutableParagraphStyle()
                 paras.paragraphSpacing = 0
-                attributedString.appendAttributedString(NSAttributedString(string: code, attributes: [NSBackgroundColorAttributeName:backgroundColor, NSForegroundColorAttributeName:UIColor.whiteColor(),NSParagraphStyleAttributeName:paras]))
+                attributedString.appendAttributedString(NSAttributedString(string: code, attributes: [NSBackgroundColorAttributeName:backgroundColor!, NSForegroundColorAttributeName:foregroundColor!,NSParagraphStyleAttributeName:paras]))
             case .Delete(let mds):
                 var tAttr:[String:AnyObject] = baseAttribute
+                if tAttr[NSFontAttributeName] == nil{
+                    tAttr[NSFontAttributeName] = deleteStyle.fontName
+                }
                 tAttr[NSStrikethroughStyleAttributeName] = NSUnderlineStyle.StyleDouble.rawValue
                 let subAttrString = renderHelper(mds, parentAttribute: tAttr)
                 attributedString.appendAttributedString(subAttrString)
-
             }
         }
         
         return attributedString
     }
     
-    func hexColor(value : Int) -> UIColor{
+    static func hexColor(value : Int) -> UIColor{
         return UIColor(red: CGFloat((value & 0xFF0000) >> 16) / 255.0, green: CGFloat((value & 0xFF00) >> 8)/255.0, blue: CGFloat(value & 0xFF)/255.0, alpha: 1.0)
         
+    }
+
+    static func quickRGB(r : CGFloat, g : CGFloat, b : CGFloat) -> UIColor{
+        return UIColor(red: r / 255.0, green: g / 255.0, blue: b/255.0, alpha: 1.0)
     }
 }
 
