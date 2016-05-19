@@ -11,6 +11,7 @@ Compare to SwiftyMarkdown, SwiftyDown provides:
 - Enhanced markdown features like `multi-line code block`,reference paragraph and ~~deleted lines~~
 - Parser-combinator based parsing process, always extensible within just few elegant code.
 - Configurable attributed option.
+- High performance rendering.
 
 
 ## Install
@@ -74,6 +75,9 @@ label.attributedText = m.convert(str)
 
 
 ## Screenshots
+### Large text display
+![](https://raw.githubusercontent.com/aaaron7/SwiftyDown/master/SwiftyDownExample/demo.gif)
+
 ![](https://raw.githubusercontent.com/aaaron7/SwiftyDown/master/SwiftyDownExample/screenshots.png)
 ![](https://raw.githubusercontent.com/aaaron7/SwiftyDown/master/SwiftyDownExample/screenshots1.png)
 ![](https://raw.githubusercontent.com/aaaron7/SwiftyDown/master/SwiftyDownExample/screenshots2.jpg)
