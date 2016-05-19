@@ -39,7 +39,6 @@ class ViewController: UIViewController {
                 self.textView.attributedText = m.convert(finalStr)
             }
         }
-
     }
 
     @IBOutlet weak var label: UILabel!

@@ -72,8 +72,7 @@ class AaHTTP {
     
     func paras(p : [String:AnyObject]) -> AaHTTP{
         self.finalParas = [:]
-        
-        
+
         _ = parameters.reduce("", combine: { (str, p) -> String in
             self.finalParas[p.0] = p.1
             return ""

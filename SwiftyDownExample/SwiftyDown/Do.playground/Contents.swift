@@ -54,3 +54,21 @@ func lineUntil(word : String) -> Parser<String>{
 }
 until("test3").p("swfwefiuhuitest3fewef")
 lineUntil("test3").p("swfwefiuhuitest3fewef")
+
+
+var arr : [Int?] = [1,3,nil,4]
+var arr1:[Int] = arr.flatMap{ $0 }
+arr1
+
+print(arr1)
+
+let m = [3]
+
+m.flatMap{[$0]}
+
+m
+
+m.flatMap{ $0 as Int? }
+
+m
+
