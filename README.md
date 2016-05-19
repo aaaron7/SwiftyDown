@@ -10,7 +10,7 @@ Compare to SwiftyMarkdown, SwiftyDown provides:
 - Nested mark support, like **[Bold link](https://github.com/aaaron7)**, 
 - Enhanced markdown features like `multi-line code block`,reference paragraph and ~~deleted lines~~
 - Parser-combinator based parsing process, always extensible within just few elegant code.
-- Configurable attributed option. (coming soon)
+- Configurable attributed option.
 
 
 ## Install
